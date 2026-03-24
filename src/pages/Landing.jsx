@@ -1,11 +1,30 @@
 import { useNavigate } from 'react-router-dom';
-import { Hammer, Users, ShieldCheck, MapPin } from 'lucide-react';
+import { Hammer, Users, ShieldCheck, MapPin, Globe } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Landing() {
   const navigate = useNavigate();
+  const [lang, setLang] = useState('en');
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center glass animate-fade-in w-full gap-8">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center glass animate-fade-in w-full gap-8 relative">
+      
+      {/* Language Selector */}
+      <div className="absolute top-4 right-4 flex items-center gap-2 glass px-3 py-2 rounded-full cursor-pointer hover:bg-white/10" style={{ zIndex: 10 }}>
+         <Globe size={18} className="text-muted" />
+         <select 
+           value={lang} 
+           onChange={(e) => setLang(e.target.value)} 
+           style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', outline: 'none', cursor: 'pointer', fontSize: '0.875rem' }}
+         >
+           <option value="en" style={{ color: 'black' }}>English</option>
+           <option value="hi" style={{ color: 'black' }}>हिंदी (Hindi)</option>
+           <option value="mr" style={{ color: 'black' }}>मराठी (Marathi)</option>
+           <option value="bn" style={{ color: 'black' }}>বাংলা (Bengali)</option>
+           <option value="te" style={{ color: 'black' }}>తెలుగు (Telugu)</option>
+         </select>
+      </div>
+
       <div className="mb-4 flex flex-col items-center justify-center mt-12 w-full">
         <div style={{ width: 80, height: 80, backgroundColor: 'var(--primary)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', boxShadow: '0 10px 25px rgba(79, 70, 229, 0.5)' }}>
           <Hammer size={40} color="white" />

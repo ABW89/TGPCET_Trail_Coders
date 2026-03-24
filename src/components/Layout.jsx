@@ -1,21 +1,14 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { Home, MapPin, Briefcase, User, Mic } from 'lucide-react';
 import { useState } from 'react';
+import VoiceAssistantModal from './VoiceAssistantModal';
 
 export default function Layout() {
-  const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
   const navigate = useNavigate();
 
   const toggleVoice = () => {
-    if (!voiceEnabled) {
-      if ('speechSynthesis' in window) {
-        const msg = new SpeechSynthesisUtterance('Voice UI enabled for RozgarSaathi. I will assist you.');
-        window.speechSynthesis.speak(msg);
-      }
-      setVoiceEnabled(true);
-    } else {
-      setVoiceEnabled(false);
-    }
+    setVoiceOpen(true);
   };
 
   return (
@@ -30,12 +23,12 @@ export default function Layout() {
         </div>
         <button 
           onClick={toggleVoice} 
-          className={`btn ${voiceEnabled ? 'btn-primary' : 'btn-outline'}`}
+          className="btn btn-outline"
           style={{padding: '0.4rem 1rem', borderRadius: '50px'}}
-          title="Toggle Voice-First UI"
+          title="Open Voice AI"
         >
           <Mic size={18} />
-          <span style={{ fontSize: '0.875rem' }}>{voiceEnabled ? 'Listening' : 'Voice'}</span>
+          <span style={{ fontSize: '0.875rem' }}>Voice AI</span>
         </button>
       </header>
 
@@ -63,6 +56,9 @@ export default function Layout() {
           <span>Account</span>
         </NavLink>
       </nav>
+
+      {/* WhatsApp-like Voice Assistant Slide Pop */}
+      <VoiceAssistantModal isOpen={voiceOpen} onClose={() => setVoiceOpen(false)} />
     </div>
   );
 }
