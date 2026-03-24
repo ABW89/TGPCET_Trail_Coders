@@ -24,9 +24,10 @@ export default function ConsumerDashboard() {
       wage: Number(formData.get('wage')),
       timing: formData.get('timing'),
       womenOnly: formData.get('womenOnly') === 'on',
-      distance: '0km (Here)',
+      distance: '2.8km', // Simulated distance calculation
       urgency: formData.get('urgency'),
-      location: currentUser.location
+      location: { lat: 21.1560, lng: 79.0950 }, // Mock coordinates nearby the worker 
+      detailedAddress: formData.get('detailedAddress')
     };
     addJob(newJob);
     setIsPosting(false);
@@ -45,7 +46,7 @@ export default function ConsumerDashboard() {
 
        {isPosting ? (
          <div className="card border-secondary animate-fade-in">
-           <h4 className="mb-4">New Request</h4>
+           <h4 className="mb-4 text-secondary">New Specific Request</h4>
            <form onSubmit={handlePostJob} className="flex-col gap-4">
              <div className="input-group">
                <label className="input-label">Skill Needed</label>
@@ -75,6 +76,11 @@ export default function ConsumerDashboard() {
              <div className="input-group">
                 <label className="input-label">Timing</label>
                 <input type="text" name="timing" className="input-field" placeholder="Immediate, Today 3 PM..." required />
+             </div>
+
+             <div className="input-group">
+                <label className="input-label text-white">Detailed Exact Address</label>
+                <textarea name="detailedAddress" className="input-field" rows="2" placeholder="House/Flat number, Street name, nearest landmark... Be specific so the worker can navigate!" required></textarea>
              </div>
 
              <div className="flex items-center gap-2 mt-2">
@@ -115,6 +121,11 @@ export default function ConsumerDashboard() {
                  <div className="flex gap-4 text-muted" style={{fontSize: '0.875rem'}}>
                    <span className="flex items-center gap-1"><DollarSign size={14}/> ₹{job.wage}</span>
                    <span className="flex items-center gap-1"><Clock size={14}/> {job.timing}</span>
+                 </div>
+                 
+                 <div className="text-muted flex items-start gap-1" style={{fontSize: '0.875rem'}}>
+                    <MapPin size={14} className="mt-1 flex-shrink-0" />
+                    <span><b>Address:</b> {job.detailedAddress || "Basic Address Provided"}</span>
                  </div>
                  
                  {job.status === 'active' || job.status === 'on-way' ? (

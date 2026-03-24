@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { MapPin, Navigation, CheckCircle, Clock, AlertCircle, MessageCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import ChatModal from '../components/ChatModal';
 import FeedbackModal from '../components/FeedbackModal';
 
@@ -9,10 +10,9 @@ export default function WorkerDashboard() {
   const [chatOpen, setChatOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [targetName, setTargetName] = useState('');
+  const navigate = useNavigate();
 
-  // Filter open jobs
   const openJobs = jobs.filter(j => j.status === 'open');
-  // Worker active jobs
   const myJob = jobs.find(j => j.workerId === currentUser.id && (j.status === 'active' || j.status === 'on-way'));
 
   const handleComplete = (job) => {
@@ -21,9 +21,13 @@ export default function WorkerDashboard() {
     setFeedbackOpen(true);
   };
 
+  const handleAcceptJob = (jobId) => {
+    applyForJob(jobId);
+    navigate('/map');
+  };
+
   return (
     <div className="flex-col gap-6 w-full animate-fade-in pb-8">
-      
       {/* Worker Stats */}
       <div className="grid grid-cols-2 gap-4">
         <div className="card text-center p-4">
@@ -37,7 +41,7 @@ export default function WorkerDashboard() {
       </div>
 
       {myJob ? (
-        <div className="card border border-primary relative">
+        <div className="card border border-primary relative shadow-lg" style={{backgroundColor: 'var(--surface-light)'}}>
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-primary pr-8">Current Job</h3>
             <div className="badge badge-verified capitalize">{myJob.status.replace('-', ' ')}</div>
@@ -50,9 +54,10 @@ export default function WorkerDashboard() {
           </button>
           
           <h4 className="mb-1">{myJob.skillNeeded} needed by {myJob.consumerName}</h4>
-          <p className="text-muted flex items-center gap-1 mb-4" style={{fontSize: '0.875rem'}}>
-            <MapPin size={14} /> {myJob.distance} away
-          </p>
+          <div className="text-muted flex items-start gap-1 mb-4" style={{fontSize: '0.875rem'}}>
+            <MapPin size={14} className="mt-1 flex-shrink-0" /> 
+            <span>Address: <b>{myJob.detailedAddress || myJob.consumerName + "'s standard location"}</b> <br/>({myJob.distance} away)</span>
+          </div>
           <div className="flex justify-between items-center mb-6 p-3 glass" style={{borderRadius: 'var(--radius-md)'}}>
             <span className="text-muted">Estimated Wage</span>
             <span className="text-secondary" style={{fontWeight: 'bold', fontSize: '1.25rem'}}>₹{myJob.wage}</span>
@@ -69,7 +74,9 @@ export default function WorkerDashboard() {
                 <CheckCircle size={18} /> Mark Done
               </button>
             )}
-            <button className="btn btn-outline border-danger text-danger hover:bg-[rgba(239,68,68,0.1)]">Emergency</button>
+            <button className="btn btn-outline border-primary text-primary hover:bg-primary hover:text-white" onClick={() => navigate('/map')}>
+              <MapPin size={18} /> Map & ETA
+            </button>
           </div>
         </div>
       ) : (
@@ -104,7 +111,7 @@ export default function WorkerDashboard() {
 
                   <div className="flex justify-between items-center">
                     <span className="text-secondary" style={{fontWeight: 'bold'}}>₹{job.wage}</span>
-                    <button className="btn btn-primary py-2 px-4" onClick={() => applyForJob(job.id)}>Accept Job</button>
+                    <button className="btn btn-primary py-2 px-4" onClick={() => handleAcceptJob(job.id)}>Accept Job</button>
                   </div>
                 </div>
                ))
